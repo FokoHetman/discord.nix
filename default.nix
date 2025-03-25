@@ -1,19 +1,19 @@
-{ lib, config, ... }:
-
+{ config, options, lib, pkgs, ... }:
+with lib;  
 let
   cfg = config.discord;
 
   /* PERMISSIONS */
   permsBool = 
-    description: lib.mkOption {type = lib.types.nullOr lib.types.bool;default=null; inherit description;};
-  permission_type = lib.types.submodule {
+    description: mkOption {type = types.nullOr types.bool;default=null; inherit description;};
+  permission_type = types.submodule {
     options = {
       sendMessages = permsBool "Should this role be able to send message on this channel?";
       viewChannel = permsBool "Should this role be able to view this channel?";
     };
   };
 
-  role_permission_type = lib.types.submodule {
+  role_permission_type = types.submodule {
     options = {
       sendMessages = permsBool "Should this role be able to send messages?";
       viewChannels = permsBool "Should this role be able to see channels?";
@@ -22,31 +22,31 @@ let
   };
 
 
-  category_permissions = lib.mkOption {
+  category_permissions = mkOption {
     description = "Global permissions of this category.";             
     type = permission_type;
     default = {};
   };
-  channel_permissions = lib.mkOption {
+  channel_permissions = mkOption {
     description = "Permissions of this channel.";             
     type = permission_type;
     default = {};
   };
 
-  role_permissions = lib.mkOption {
+  role_permissions = mkOption {
     description = "Global permissions of this role.";
     type = role_permission_type;
     default = {};
   };
 
   /* CHANNELS */
-  channels = lib.mkOption {
+  channels = mkOption {
     description = "Set of channels in the category.";
-    type = lib.types.attrsOf (lib.types.submodule {
+    type = types.attrsOf (types.submodule {
       options = {
-        roles = lib.mkOption {
+        roles = mkOption {
           description = "Role permissions across this channel.";
-          type = lib.types.attrsOf (lib.types.submodule {
+          type = types.attrsOf (types.submodule {
             options = {
               permissions = channel_permissions;
             };
@@ -57,15 +57,15 @@ let
     });
   };
   /* CATEGORIES */
-  categories = lib.mkOption {
+  categories = mkOption {
     description = "Set of categories in the server.";
             
-    type = lib.types.attrsOf (lib.types.submodule {
+    type = types.attrsOf (types.submodule {
       options = {
         inherit channels;
-        roles = lib.mkOption {
+        roles = mkOption {
           description = "Role permissions across this category.";
-          type = lib.types.attrsOf (lib.types.submodule {
+          type = types.attrsOf (types.submodule {
             options = {
               permissions = category_permissions;
             };
@@ -77,9 +77,9 @@ let
     default = {};
   };
   /* ROLES */
-  roles = lib.mkOption {
+  roles = mkOption {
     description = "Set of server roles defined via this module.";
-    type = lib.types.attrsOf (lib.types.submodule {
+    type = types.attrsOf (types.submodule {
       options = {
         permissions = role_permissions;
       };
@@ -90,22 +90,24 @@ in
 {
   options = {
     discord = {
-      enable = lib.mkOption {
+      enable = mkOption {
         description = "Whether to enable this module.";
-        type = lib.types.bool;
+        type = types.bool;
         default = false;
       };
-      servers = lib.mkOption {
+      servers = mkOption {
         description = "Set of servers controlled via this module.";
         
-        type = lib.types.attrsOf (lib.types.submodule {
+        type = types.attrsOf (types.submodule {
           options = {inherit categories roles;};
         });
         default = {};
       };
     };
   };
-
-  config = {
+  config = mkIf cfg.enable {
+    system.activationScripts."discord" = ''
+      echo \"hi!\"
+    '';
   };
 }
