@@ -2,7 +2,6 @@
 with lib;  
 let
   cfg = config.discord;
-
   /* PERMISSIONS */
   permsBool = 
     description: mkOption {type = types.nullOr types.bool;default=null; inherit description;};
@@ -53,6 +52,11 @@ let
           });
           default = {};
         };
+        type = mkOption {
+          description = "Type of the channel.";
+          type = types.enum ["text" "voice"];
+          default = "text";
+        };
       };
     });
   };
@@ -86,6 +90,11 @@ let
     });
     default = {};
   };
+  sync_data = pkgs.writers.writePython3Bin "discord_sync" { libraries = [ pkgs.python3Packages.json5 ]; } ''
+print("laziness made me not data sync lmao")
+'';
+
+  
 in
 {
   options = {
@@ -94,6 +103,11 @@ in
         description = "Whether to enable this module.";
         type = types.bool;
         default = false;
+      };
+      token_path = mkOption {
+        description = "Path to your discord token.";
+        type = types.str;
+        default = "";
       };
       servers = mkOption {
         description = "Set of servers controlled via this module.";
@@ -106,8 +120,18 @@ in
     };
   };
   config = mkIf cfg.enable {
+    # YOU LAZY DUMBFOK REWRITE IT AS STRING CONCATS!!!! (probably very hard but shut up)
     system.activationScripts."discord" = ''
-      echo \"hi!\"
+      #echo Hi, user with TOKEN: $(cat ${cfg.token_path}) # do not echo it in prod, dumbfok
+    
+      # curl to a json guilds & channels of needed guilds (yes, you can use a python script absolute dumbfok)
+      
+
+      mkdir /tmp/discord_sync
+      echo '${builtins.toJSON cfg}' > /tmp/discord_sync/config.json
+      
+      #${sync_data}
+      #rm -r /tmp/discord_sync
     '';
   };
 }
