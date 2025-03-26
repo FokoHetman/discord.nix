@@ -112,6 +112,7 @@ guilds = requests.get('https://discord.com/api/users/@me/guilds', headers=header
 for i in guilds:
   if i["name"] in config["servers"]: # add id checking too later, for name redefining
     chctg = requests.get('https://discord.com/api/guilds/{i.id}/channels', headers=headers).json()
+    print(chctg)
     categories = []
     channels = []
     for x in chctg:
@@ -125,14 +126,16 @@ for i in guilds:
         case _:
           pass
     for category in config["servers"][i["name"]]["categories"]:
-      for category_n in categories:
-        category_obj = category[category_n]
-        if category_obj["name"]==category:
-          print("Creating category: ", category)
-          id = category_obj["id"]
-          resp = requests.post('https://discord.com/api/guilds/{id}/channels', 
-            json = {"name": category}, headers=headers).json()
-          print("Created {category} with ID: ", resp["id"])
+      if not category in map(lambda x: x["name"], categories):
+        print("Creating category: ", category)
+        id = -1
+        for i in categories:
+          if i["name"]==category:
+            id = i["id"]
+        
+        resp = requests.post('https://discord.com/api/guilds/{id}/channels', 
+          json = {"name": category}, headers=headers).json()
+        print("Created {category} with ID: ", resp["id"])
 '';
 
   
