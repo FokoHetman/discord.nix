@@ -140,7 +140,7 @@ in
 
       echo '${builtins.toJSON cfg}' > /tmp/discord_sync/config.json
       
-      ${sync_data}
+      ${sync_data}/bin/discord_sync
       #rm -r /tmp/discord_sync
     '';
   };
