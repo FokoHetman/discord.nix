@@ -135,7 +135,7 @@ for i in guilds:
         
         resp = requests.post(f"https://discord.com/api/guilds/{id}/channels", 
           json = {"name": category, "type": 4}, headers=headers).json()
-        # print(resp)
+        print(resp)
         print(f"Created {category} with ID: ", resp["id"])
 '';
 
