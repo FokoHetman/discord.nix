@@ -24,7 +24,7 @@
 
       })
   // {
-    nixosModules.stylix =
+    nixosModules.discord =
         { pkgs, ... }@args:
         {
           imports = [
