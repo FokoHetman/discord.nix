@@ -92,7 +92,7 @@ let
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
     libraries = with pkgs.python3Packages; [ requests json5 ];
-    flakeIgnore = ["E111" "E251" "E128" "W291" "E501" "E231"];
+    flakeIgnore = ["E111" "E251" "E128" "W291" "E501" "E231" "E261" "E225"];
   } /*python3*/ ''
 import requests
 import json
