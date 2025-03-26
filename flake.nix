@@ -15,7 +15,7 @@
       ...
     }@inputs:
   {
-    nixosModules.discord = { pkgs, lib, config, ... }@args: 
-        import ./. {inherit pkgs lib config;};
+    nixosModules.discord = { pkgs, lib, config, options, ... }@args: 
+        import ./. {inherit pkgs lib config options;};
   };
 }
