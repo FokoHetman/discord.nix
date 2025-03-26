@@ -28,8 +28,9 @@
         { pkgs, ... }@args:
         {
           imports = [
-            (import ./. pkgs)
+            (import ./.)
             {
+              inherit pkgs;
               discord = {
                 
               };
