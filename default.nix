@@ -115,13 +115,13 @@ for i in guilds:
     categories = []
     channels = []
     for x in chctg:
-      match chtg[x]["type"]:
+      match chctg[x]["type"]:
         case 4: # Category
-          categories.append(chtg[x])
+          categories.append(chctg[x])
         case 2: # Channel
-          channels.append(chtg[x])
+          channels.append(chctg[x])
         case 0: #
-          channels.append(chtg[x])
+          channels.append(chctg[x])
         case _:
           pass
     for category in config["servers"][i["name"]]["categories"]:
