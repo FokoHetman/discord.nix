@@ -92,7 +92,7 @@ let
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
     libraries = with pkgs.python3Packages; [ requests json5 ];
-    flakeIgnore = ["E111" "E251" "E128" "W291" "W293" "E501" "E231" "E261" "E225"];
+    flakeIgnore = ["E111" "E251" "E128" "W291" "W293" "E265" "E501" "E231" "E261" "E225"];
   } /*python3*/ ''
 import requests
 import json
@@ -112,7 +112,7 @@ guilds = requests.get('https://discord.com/api/users/@me/guilds', headers=header
 for i in guilds:
   if i["name"] in config["servers"]: # add id checking too later, for name redefining
     chctg = requests.get(f"https://discord.com/api/guilds/{i.id}/channels", headers=headers).json()
-    #print(chctg)
+    # print(chctg)
     categories = []
     channels = []
     for x in chctg:
