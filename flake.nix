@@ -21,6 +21,6 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-    nixosModules.discord = import ./. {inherit pkgs;};
+    nixosModules.discord = import ./. {inherit pkgs lib;};
   });
 }
