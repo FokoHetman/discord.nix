@@ -91,7 +91,7 @@ let
     default = {};
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
-    libraries = with pkgs.python3Packages[ requests json5 ]; } ''
+    libraries = with pkgs.python3Packages; [ requests json5 ]; } ''
 import json, requests
 f = open("${cfg.token_path}")
 token = f.read()
