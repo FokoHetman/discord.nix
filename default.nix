@@ -101,7 +101,9 @@ f = open("${cfg.token_path}")
 token = f.read()
 f.close()
 
-config = json.load("/tmp/discord_sync/config.json")
+f = open("/tmp/discord_sync/config.json")
+config = json.load(f)
+f.close()
 
 headers = {"Authorization": token, "Content-Type": "application/json"}
 
