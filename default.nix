@@ -98,7 +98,9 @@ token = f.read()
 f.close()
 
 headers = {"Authorization": token, "Content-Type": "application/json"}
-print(requests.get('https://discord.com/api/users/@me/guilds', headers=headers).json())
+
+req=requests.get('https://discord.com/api/users/@me/guilds',headers=headers)
+print(req.json())
 '';
 
   
