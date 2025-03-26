@@ -97,6 +97,8 @@ let
 import requests
 import json
 
+print("discord.nix: Starting...")
+
 f = open("${cfg.token_path}")
 token = f.read()
 f.close()
@@ -133,6 +135,7 @@ for i in guilds:
           json = {"name": category, "type": 4}, headers=headers).json()
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
+print("discord.nix: Done.")
 '';
 
   
