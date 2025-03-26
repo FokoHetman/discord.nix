@@ -14,13 +14,8 @@
       self,
       ...
     }@inputs:
-      inputs.flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        inherit (nixpkgs) lib;
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-    nixosModules.discord = import ./. {inherit pkgs lib;};
-  });
+  {
+    nixosModules.discord = { pkgs, lib, config, ... }@args: 
+        import ./. {inherit pkgs lib config;};
+  };
 }
