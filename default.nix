@@ -93,15 +93,43 @@ let
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
     libraries = with pkgs.python3Packages; [ requests json5 ];
     flakeIgnore = ["E501" "E231"];
-  } ''
+  } /*python3*/ ''
 import requests
+import json
+
 f = open("${cfg.token_path}")
 token = f.read()
 f.close()
 
+config = json.load("/tmp/discord_sync/config.json")
+
 headers = {"Authorization": token, "Content-Type": "application/json"}
 
-print(requests.get('https://discord.com/api/users/@me/guilds',headers=headers).json())
+guilds = requests.get('https://discord.com/api/users/@me/guilds', headers=headers).json()
+
+for i in guilds:
+  if i["name"] in config["servers"]: # add id checking too later, for name redefining
+    chctg = requests.get('https://discord.com/api/guilds/{i.id}/channels', headers=headers).json()
+    categories = []
+    channels = []
+    for x in chctg:
+      match x["type"]:
+        case 4: # Category
+          categories.append(x)
+        case 2: # Channel
+          channels.append(x)
+        case 0: #
+          channels.append(x)
+        case _:
+          pass
+    for category in config["servers"][i["name"]]["categories"]:
+      for category_obj in categories:
+        if category_obj["name"]==category:
+          print("Creating category: ", category)
+          id = category_obj["id"]
+          resp = requests.post('https://discord.com/api/guilds/{id}/channels', 
+            json = {"name": category}, headers=headers).json()
+          print("Created {category} with ID: ", resp["id"])
 '';
 
   
