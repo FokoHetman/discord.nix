@@ -114,7 +114,7 @@ guilds = requests.get('https://discord.com/api/users/@me/guilds', headers=header
 for i in guilds:
   if i["name"] in config["servers"]: # add id checking too later, for name redefining
     chctg = requests.get(f"https://discord.com/api/guilds/{i['id']}/channels", headers=headers).json()
-    # print(chctg)
+    print(chctg)
     categories = []
     channels = []
     for x in chctg:
