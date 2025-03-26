@@ -92,18 +92,13 @@ let
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
     libraries = with pkgs.python3Packages; [ requests json5 ]; } ''
-import json, requests
+import requests
 f = open("${cfg.token_path}")
 token = f.read()
 f.close()
 
-
-print(requests.get('https://discord.com/api/users/@me/guilds', headers = {
-    "Authorization": token,
-    "Content-Type": "application/json"
-}))
-
-
+headers = {"Authorization": token, "Content-Type": "application/json"}
+print(requests.get('https://discord.com/api/users/@me/guilds', headers=headers).json())
 '';
 
   
