@@ -28,7 +28,7 @@
         { pkgs, ... }@args:
         {
           imports = [
-            (import ./. inputs pkgs)
+            (import ./. pkgs)
             {
               discord = {
                 
