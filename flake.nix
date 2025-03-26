@@ -27,10 +27,10 @@
     nixosModules.discord =
         { pkgs, ... }@args:
         {
+          specialArgs = {inherit pkgs;};
           imports = [
             (import ./.)
             {
-              inherit pkgs;
               discord = {
                 
               };
