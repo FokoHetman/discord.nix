@@ -128,12 +128,8 @@ for i in guilds:
     for category in config["servers"][i["name"]]["categories"]:
       if category not in map(lambda x: x["name"], categories):
         print("Creating category: ", category)
-        id = -1
-        for i in categories:
-          if i["name"]==category:
-            id = i["id"]
         
-        resp = requests.post(f"https://discord.com/api/guilds/{id}/channels", 
+        resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels", 
           json = {"name": category, "type": 4}, headers=headers).json()
         print(resp)
         print(f"Created {category} with ID: ", resp["id"])
