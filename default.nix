@@ -90,8 +90,20 @@ let
     });
     default = {};
   };
-  sync_data = pkgs.writers.writePython3Bin "discord_sync" { libraries = [ pkgs.python3Packages.json5 ]; } ''
-print("laziness made me not data sync lmao")
+  sync_data = pkgs.writers.writePython3Bin "discord_sync" {
+    libraries = with pkgs.python3Packages[ requests json5 ]; } ''
+import json, requests
+f = open("${cfg.token_path}")
+token = f.read()
+f.close()
+
+
+print(requests.get('https://discord.com/api/users/@me/guilds', headers = {
+    "Authorization": token,
+    "Content-Type": "application/json"
+}))
+
+
 '';
 
   
@@ -124,13 +136,13 @@ in
     system.activationScripts."discord" = ''
       #echo Hi, user with TOKEN: $(cat ${cfg.token_path}) # do not echo it in prod, dumbfok
     
-      # curl to a json guilds & channels of needed guilds (yes, you can use a python script absolute dumbfok)
-      
-
       mkdir /tmp/discord_sync
+      # curl to a json guilds & channels of needed guilds (yes, you can use a python script absolute dumbfok)
+
+
       echo '${builtins.toJSON cfg}' > /tmp/discord_sync/config.json
       
-      #${sync_data}
+      ${sync_data}
       #rm -r /tmp/discord_sync
     '';
   };
