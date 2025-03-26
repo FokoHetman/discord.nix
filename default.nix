@@ -91,7 +91,9 @@ let
     default = {};
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
-    libraries = with pkgs.python3Packages; [ requests json5 ]; } ''
+    libraries = with pkgs.python3Packages; [ requests json5 ];
+    flakeIgnore = ["E501" "E231"];
+  } ''
 import requests
 f = open("${cfg.token_path}")
 token = f.read()
