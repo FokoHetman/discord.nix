@@ -143,7 +143,7 @@ for i in guilds:
             id = cat["id"]
             break
       
-      for channel in config["servers"][i["name"]]["channels"]:
+      for channel in config["servers"][i["name"]]["categories"][category]["channels"]:
         if channel not in map(lambda x: x["name"], filter( lambda x: x["parent_id"]==id, channels ) ):
           print("Creating channel: ", channel)
 
