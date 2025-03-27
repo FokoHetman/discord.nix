@@ -138,9 +138,9 @@ for i in guilds:
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
       if id==0:
-        for i in categories:
-          if i["name"]==category:
-            id = i["id"]
+        for cat in categories:
+          if cat["name"]==category:
+            id = cat["id"]
             break
       
       for channel in config["servers"][i["name"]]["channels"]:
