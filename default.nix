@@ -128,13 +128,30 @@ for i in guilds:
         case _:
           pass
     for category in config["servers"][i["name"]]["categories"]:
+      id = 0
       if category not in map(lambda x: x["name"], categories):
         print("Creating category: ", category)
         
         resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels", 
           json = {"name": category, "type": 4}, headers=headers).json()
+        id = resp["id"]
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
+      if id==0:
+        for i in categories:
+          if i["name"]==category:
+            id = i["id"]
+            break
+      
+      for channel in channels:
+        if channel not in map(lambda x: x["name"], filter( lambda x: x["parent_id"]==id, channels ) ):
+          print("Creating channel: ", channel)
+
+          resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels",
+            json = {"name": channel, "type": 0, "parent_id": id}, headers=headers).json()
+
+      # for channel in config["channels"][i["name"]]["categories"][category]["channels"]:
+      #   pass
 print("discord.nix: Done.")
 '';
 
