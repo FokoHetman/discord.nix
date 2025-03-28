@@ -228,15 +228,17 @@ for i in guilds:
         print("Creating category: ", category)
 
 
-        rolec = {}
-        userc = {}
-        cut = config["servers"][i["name"]]["categories"][category]["permissions"]
-        if "roles" in cut:
-          rolec = cut["roles"]
-        if "users" in cut:
-          userc = cut["users"]
+        overwrites = {}
+        if "permissions" in config["servers"][i["name"]]["categories"][category]:
+          rolec = {}
+          userc = {}
+          cut = config["servers"][i["name"]]["categories"][category]["permissions"]
+          if "roles" in cut:
+            rolec = cut["roles"]
+          if "users" in cut:
+            userc = cut["users"]
 
-        overwrites = build_permissions(roles, rolec,
+          overwrites = build_permissions(roles, rolec,
                                               userc)
 
         
@@ -255,13 +257,16 @@ for i in guilds:
         if channel not in map(lambda x: x["name"], filter( lambda x: x["parent_id"]==id, channels ) ):
           print("Creating channel: ", channel)
 
-          rolec = {}
-          userc = {}
-          cut = config["servers"][i["name"]]["categories"][category]["channels"]["permissions"]
-          if "roles" in cut:
-            rolec = cut["roles"]
-          if "users" in cut:
-            userc = cut["users"]
+          
+          overwrites = {}
+          if "permissions" in config["servers"][i["name"]]["categories"][category]["channels"]:
+            rolec = {}
+            userc = {}
+            cut = config["servers"][i["name"]]["categories"][category]["channels"]["permissions"]
+            if "roles" in cut:
+              rolec = cut["roles"]
+            if "users" in cut:
+              userc = cut["users"]
 
           overwrites = build_permissions(roles, rolec,
                                                 userc)
