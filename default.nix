@@ -268,7 +268,7 @@ for i in guilds:
             if "users" in cut:
               userc = cut["users"]
 
-          overwrites = build_permissions(roles, rolec,
+            overwrites = build_permissions(roles, rolec,
                                                 userc)
 
           resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels",
