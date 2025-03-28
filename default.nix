@@ -96,7 +96,7 @@ let
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
     libraries = with pkgs.python3Packages; [ requests json5 ];
-    flakeIgnore = ["E111" "E114" "E251" "E127" "E128" "E201" "E202" "W291" "W293" "W391" "E265" "E303" "E305" "E501" "E231" "E261" "E225"];
+    flakeIgnore = ["E111" "E114" "E121" "E221" "E251" "E127" "E128" "E201" "E202" "W291" "W293" "W391" "E265" "E302" "E303" "E305" "E501" "E231" "E261" "E225"];
   } /*python3*/ ''
 
 import requests
@@ -194,7 +194,7 @@ def build_permissions(discord_roles, roles, users):
     for permission in roles[i]:
       if roles[i][permission]:
         allow |= (1 << perms.index(permission))
-      elif roles[i][permission]==False:
+      elif roles[i][permission] is False:
         deny  |= (1 << perms.index(permission))
 
     res = {}
