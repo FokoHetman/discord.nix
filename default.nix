@@ -92,7 +92,7 @@ let
   };
   sync_data = pkgs.writers.writePython3Bin "discord_sync" {
     libraries = with pkgs.python3Packages; [ requests json5 ];
-    flakeIgnore = ["E111" "E114" "E251" "E128" "E201" "E202" "W291" "W293" "E265" "E501" "E231" "E261" "E225"];
+    flakeIgnore = ["E111" "E114" "E251" "E127" "E128" "E201" "E202" "W291" "W293" "W391" "E265" "E303" "E305" "E501" "E231" "E261" "E225"];
   } /*python3*/ ''
 
 import requests
@@ -173,7 +173,7 @@ perms = map(camel_case, [
 
 def build_permissions(discord_roles, roles, users):
   # iterate users too
-  res = []
+  result = []
   for i in roles[:-1]:
     role_id = -1
     if i.isnumeric():
