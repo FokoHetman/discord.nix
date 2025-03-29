@@ -6,14 +6,14 @@ let
   permsBool = 
     description: mkOption {type = types.nullOr types.bool;default=null; inherit description;};
   permission_type = types.submodule {
-    options = list: value: builtins.listToAttrs (map (name: { name = name; value = value; }) list) ["createInstantInvite" "kickMembers" "banMembers" "administrator" "manageChannels" "manageGuild" "addReactions" "viewAuditLog" "prioritySpeaker" "stream" "viewChannel" "sendMessages" "sendTtsMessages" "manageMessages" "embedLinks" "attachFiles" "readMessageHistory" "mentionEveryone" "useExternalEmojis" "viewGuildInsights" "connect" "speak" "muteMembers" "deafenMembers" "moveMembers" "useVad" "changeNickname" "manageNicknames" "manageRoles" "manageWebhooks" "manageEmojisAndStickers" "useApplicationCommands" "requestToSpeak" "manageEvents" "manageThreads" "createPublicThreads" "createPrivateThreads" "useExternalStickers" "sendMessagesInThreads" "useEmbeddedActivities" "moderateMembers" "viewCreatorMonetizationAnalytics" "useSoundboard" "createGuildExpressions" "createEvents" "useExternalSounds" "sendVoiceMessages" "sendPolls" "useExternalApps"] (permsBool "A permission.");
+    options = /*list: value: builtins.listToAttrs (map (name: { name = name; value = value; }) list) ["createInstantInvite" "kickMembers" "banMembers" "administrator" "manageChannels" "manageGuild" "addReactions" "viewAuditLog" "prioritySpeaker" "stream" "viewChannel" "sendMessages" "sendTtsMessages" "manageMessages" "embedLinks" "attachFiles" "readMessageHistory" "mentionEveryone" "useExternalEmojis" "viewGuildInsights" "connect" "speak" "muteMembers" "deafenMembers" "moveMembers" "useVad" "changeNickname" "manageNicknames" "manageRoles" "manageWebhooks" "manageEmojisAndStickers" "useApplicationCommands" "requestToSpeak" "manageEvents" "manageThreads" "createPublicThreads" "createPrivateThreads" "useExternalStickers" "sendMessagesInThreads" "useEmbeddedActivities" "moderateMembers" "viewCreatorMonetizationAnalytics" "useSoundboard" "createGuildExpressions" "createEvents" "useExternalSounds" "sendVoiceMessages" "sendPolls" "useExternalApps"] (permsBool "A permission.");*/
 
 
-    #{
+    {
 
-      #sendMessages = permsBool "Should this role be able to send message on this channel?";
-      #viewChannel = permsBool "Should this role be able to view this channel?";
-      #};
+      sendMessages = permsBool "Should this role be able to send message on this channel?";
+      viewChannel = permsBool "Should this role be able to view this channel?";
+    };
   };
 
   role_permission_type = types.submodule {
