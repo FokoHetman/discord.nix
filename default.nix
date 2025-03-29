@@ -52,13 +52,18 @@ let
     type = types.attrsOf (types.submodule {
       options = {
         permissions = mkOption {
-          roles = mkOption {
-            description = "Role permissions across this channel.";
-            type = types.attrsOf (types.submodule {
-              options = channel_permissions;
-            });
-            default = {};
-          };
+          type = types.attrsOf (types.submodule {
+            options = {
+              roles = mkOption {
+                description = "Role permissions across this channel.";
+                type = types.attrsOf (types.submodule {
+                  options = channel_permissions;
+                });
+                default = {};
+              };
+            };
+          });
+          
         };
         type = mkOption {
           description = "Type of the channel.";
