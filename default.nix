@@ -192,7 +192,7 @@ def build_permissions(discord_roles, roles, users):
   for i in roles:
     role_id = -1
     if i.isnumeric():
-      role_id = i
+      role_id = int(i)
     else:
       for j in discord_roles:
         if j["name"]==i:
