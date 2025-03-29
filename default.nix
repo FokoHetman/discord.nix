@@ -51,7 +51,7 @@ let
     description = "Set of channels in the category.";
     type = types.attrsOf (types.submodule {
       options = {
-        permissions = {
+        permissions = mkOption {
           roles = mkOption {
             description = "Role permissions across this channel.";
             type = types.attrsOf (types.submodule {
