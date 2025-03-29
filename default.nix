@@ -57,7 +57,7 @@ let
               roles = mkOption {
                 description = "Role permissions across this channel.";
                 type = types.attrsOf (types.submodule {
-                  options = channel_permissions;
+                  options = permission_type;
                 });
                 default = {};
               };
