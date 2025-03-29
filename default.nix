@@ -47,14 +47,17 @@ let
     description = "Set of channels in the category.";
     type = types.attrsOf (types.submodule {
       options = {
-        roles = mkOption {
-          description = "Role permissions across this channel.";
+        permissions = mkOption {
+          description = "Permission settings.";
           type = types.attrsOf (types.submodule {
             options = {
-              permissions = channel_permissions;
+              roles = mkOption {
+                description = "Role permissions across this channel.";
+                type = channel_permissions;
+                default = {};
+              };
             };
           });
-          default = {};
         };
         type = mkOption {
           description = "Type of the channel.";
@@ -226,6 +229,7 @@ for i in guilds:
       id = 0
       if category not in map(lambda x: x["name"], categories):
         print("Creating category: ", category)
+
 
 
         overwrites = {}
