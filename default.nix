@@ -212,7 +212,7 @@ def build_permissions(discord_roles, roles, users):
     res["id"] = role_id
     res["type"] = 0
     res["allow"] = allow
-    res["den"] = deny
+    res["deny"] = deny
     result.append(res)
   return result
 
