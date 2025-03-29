@@ -192,12 +192,12 @@ def build_permissions(discord_roles, roles, users):
   for i in roles:
     role_id = -1
     if i.isnumeric():
-      role_id = int(i)
+      role_id = i
     else:
       for j in discord_roles:
         if j["name"]==i:
           role_id = j["id"]
-    if role_id<0:
+    if int(role_id)<0:
       raise Exception("non existent role")
     
     allow = 0
