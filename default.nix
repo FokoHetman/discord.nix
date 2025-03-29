@@ -49,6 +49,7 @@ let
 
   channels = mkOption {
     description = "Set of channels in the category.";
+    default = {};
     type = types.attrsOf (types.submodule {
       options = {
         permissions = mkOption {
@@ -61,7 +62,7 @@ let
               };
             };
           };
-          
+          default = {};
         };
         type = mkOption {
           description = "Type of the channel.";
@@ -78,13 +79,16 @@ let
     type = types.attrsOf (types.submodule {
       options = {
         inherit channels;
-        roles = mkOption {
-          description = "Role permissions across this category.";
-          type = types.attrsOf (types.submodule {
+        permissions = mkOption {
+          type = types.submodule {
             options = {
-              permissions = category_permissions;
+              roles = mkOption {
+                description = "Role permissions across this channel.";
+                type = types.attrsOf (permission_type);
+                default = {};
+              };
             };
-          });
+          };
           default = {};
         };
       };
