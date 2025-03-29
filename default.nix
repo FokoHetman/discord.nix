@@ -43,21 +43,22 @@ let
   };
 
   /* CHANNELS */
+  # DO THE SAME FOR CATEGORIES
+  
+  # I AM TO HIGH TO DO THAT SORRY
+
   channels = mkOption {
     description = "Set of channels in the category.";
     type = types.attrsOf (types.submodule {
       options = {
-        permissions = mkOption {
-          description = "Permission settings.";
-          type = types.attrsOf (types.submodule {
-            options = {
-              roles = mkOption {
-                description = "Role permissions across this channel.";
-                type = channel_permissions;
-                default = {};
-              };
-            };
-          });
+        permissions = {
+          roles = mkOption {
+            description = "Role permissions across this channel.";
+            type = types.attrsOf (types.submodule {
+              options = channel_permissions;
+            });
+            default = {};
+          };
         };
         type = mkOption {
           description = "Type of the channel.";
