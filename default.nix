@@ -189,7 +189,7 @@ perms = map(camel_case, [
 def build_permissions(discord_roles, roles, users):
   # iterate users too
   result = []
-  for i in roles[:-1]:
+  for i in roles:
     role_id = -1
     if i.isnumeric():
       role_id = i
