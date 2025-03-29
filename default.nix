@@ -134,7 +134,7 @@ def camel_case(text):
         return text
     return s[0] + ''\''.join(i.capitalize() for i in s[1:])
 
-perms = map(camel_case, [
+perms = list(map(camel_case, [
   "CREATE_INSTANT_INVITE",
   "KICK_MEMBERS",
   "BAN_MEMBERS",
@@ -184,7 +184,7 @@ perms = map(camel_case, [
   "SEND_VOICE_MESSAGES",
   "SEND_POLLS",
   "USE_EXTERNAL_APPS"
-])
+]))
 
 def build_permissions(discord_roles, roles, users):
   # iterate users too
