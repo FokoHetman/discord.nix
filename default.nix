@@ -52,7 +52,7 @@ let
     type = types.attrsOf (types.submodule {
       options = {
         permissions = mkOption {
-          type = types.attrsOf (types.submodule {
+          type = types.submodule {
             options = {
               roles = mkOption {
                 description = "Role permissions across this channel.";
@@ -62,7 +62,7 @@ let
                 default = {};
               };
             };
-          });
+          };
           
         };
         type = mkOption {
