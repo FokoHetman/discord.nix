@@ -271,10 +271,10 @@ for i in guilds:
 
           
           overwrites = {}
-          if "permissions" in config["servers"][i["name"]]["categories"][category]["channels"]:
+          if "permissions" in config["servers"][i["name"]]["categories"][category]["channels"][channel]:
             rolec = {}
             userc = {}
-            cut = config["servers"][i["name"]]["categories"][category]["channels"]["permissions"]
+            cut = config["servers"][i["name"]]["categories"][category]["channels"][channel]["permissions"]
             if "roles" in cut:
               rolec = cut["roles"]
             if "users" in cut:
