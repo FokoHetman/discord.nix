@@ -315,8 +315,10 @@ for i in guilds:
               break
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
-              del channel_obj["permission_overwrites"][zzz]["allow_new"]
-              del channel_obj["permission_overwrites"][zzz]["deny_new"]
+              if "allow_new" in channel_obj["permission_overwrites"][zzz]:
+                del channel_obj["permission_overwrites"][zzz]["allow_new"]
+              if "deny_new" in channel_obj["permission_overwrites"][zzz]:
+                del channel_obj["permission_overwrites"][zzz]["deny_new"]
             if overwrites == channel_obj["permission_overwrites"]:
               continue
             print("UPDATING OVERWRITES FOR: ", channel)
