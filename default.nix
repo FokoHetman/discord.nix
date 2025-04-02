@@ -315,6 +315,7 @@ for i in guilds:
               channel_obj = chnl
               break
           if channel_obj:
+            print(channel_obj["permission_overwrites"], "\n::\n vs \n::\n", overwrites)
             if overwrites == channel_obj["permission_overwrites"]:
               continue
             print("UPDATING OVERWRITES FOR: ", channel)
