@@ -60,6 +60,11 @@ let
                 type = types.attrsOf (permission_type);
                 default = {};
               };
+              users = mkOption {
+                description = "User permissions across this channel.";
+                type = types.attrsOf (permission_type);
+                default = {};
+              };
             };
           };
           default = {};
@@ -83,7 +88,12 @@ let
           type = types.submodule {
             options = {
               roles = mkOption {
-                description = "Role permissions across this channel.";
+                description = "Role permissions across this category.";
+                type = types.attrsOf (permission_type);
+                default = {};
+              };
+              users = mkOption {
+                description = "Role permissions across this category.";
                 type = types.attrsOf (permission_type);
                 default = {};
               };
@@ -285,10 +295,30 @@ for i in guilds:
 
           resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels",
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
+        else:
+          overwrites = {}
+          if "permissions" in config["servers"][i["name"]]["categories"][category]["channels"][channel]:
+            rolec = {}
+            userc = {}
+            cut = config["servers"][i["name"]]["categories"][category]["channels"][channel]["permissions"]
+            if "roles" in cut:
+              rolec = cut["roles"]
+            if "users" in cut:
+              userc = cut["users"]
 
-      # for channel in config["channels"][i["name"]]["categories"][category]["channels"]:
-      #   pass
+            overwrites = build_permissions(roles, rolec,
+                                                userc)
 
+          channel_obj = None
+          for chnl in channels:
+            if chnl["name"]==channel or str(chnl["id"])==channel:
+              channel_obj = chnl
+              break
+          if channel_obj:
+            if overwrites == channel_obj["permission_overwrites"]:
+              continue
+
+            requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", {"channel_overwrites": overwrites}, headers=headers)
 
 
 '';
