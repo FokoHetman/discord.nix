@@ -315,11 +315,11 @@ for i in guilds:
               channel_obj = chnl
               break
           if channel_obj:
-            print(channel_obj["permission_overwrites"], "\n::\n vs \n::\n", overwrites)
+            del channel_obj["allow_new"]
+            del channel_obj["deny_new"]
             if overwrites == channel_obj["permission_overwrites"]:
               continue
             print("UPDATING OVERWRITES FOR: ", channel)
-            print(f"https://discord.com/api/channels/{channel_obj['id']}")
             print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
               headers=headers).json())
 
