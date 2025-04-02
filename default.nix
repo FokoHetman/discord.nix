@@ -310,7 +310,7 @@ for i in guilds:
                                                 userc)
           channel_obj = None
           for chnl in channels:
-            if chnl["name"]==channel or str(chnl["id"])==channel:
+            if (chnl["name"]==channel or str(chnl["id"])==channel) and chnl["parent_id"] == id:
               channel_obj = chnl
               break
           if channel_obj:
