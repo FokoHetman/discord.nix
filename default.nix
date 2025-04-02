@@ -319,7 +319,7 @@ for i in guilds:
             if overwrites == channel_obj["permission_overwrites"]:
               continue
             print("UPDATING OVERWRITES FOR: ", channel)
-            print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", {"permission_overwrites": overwrites}, 
+            print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", data={"permission_overwrites": overwrites}, 
               headers=headers).json())
 
 
