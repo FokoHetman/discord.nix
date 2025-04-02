@@ -222,7 +222,9 @@ def build_permissions(discord_roles, roles, users):
     res["id"] = role_id
     res["type"] = 0
     res["allow"] = allow
+    res["allow_new"] = allow
     res["deny"] = deny
+    res["deny_new"] = deny
     result.append(res)
   return result
 
@@ -308,15 +310,12 @@ for i in guilds:
 
             overwrites = build_permissions(roles, rolec,
                                                 userc)
-
           channel_obj = None
           for chnl in channels:
             if chnl["name"]==channel or str(chnl["id"])==channel:
               channel_obj = chnl
               break
           if channel_obj:
-            del channel_obj["permission_overwrites"]["allow_new"]
-            del channel_obj["permission_overwrites"]["deny_new"]
             if overwrites == channel_obj["permission_overwrites"]:
               continue
             print("UPDATING OVERWRITES FOR: ", channel)
