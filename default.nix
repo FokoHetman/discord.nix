@@ -305,7 +305,7 @@ for i in guilds:
               set_ids.append(set_id["id"])
             for ovr in overwrites:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
-                requests.delete("https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
+                requests.delete(f"https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
             
 
             #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
@@ -326,7 +326,7 @@ for i in guilds:
       for channel in channels:
         if channel["name"] not in config["servers"][i["name"]]["categories"][category]["channels"] and channel["id"] not in config["servers"][i["name"]]["categories"][category]["channels"]:
           print("deleting channel: ", channel["name"])
-          print(requests.delete("https://discord.com/api/channels/{channel['id']}").json())
+          print(requests.delete(f"https://discord.com/api/channels/{channel['id']}").json())
 
 
 
@@ -382,7 +382,7 @@ for i in guilds:
               set_ids.append(set_id["id"])
             for ovr in overwrites:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
-                requests.delete("https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
+                requests.delete(f"https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
 
 
             if sorted(overwrites, key=lambda d: d['id']) == sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
