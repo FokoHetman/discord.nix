@@ -319,6 +319,7 @@ for i in guilds:
                 del channel_obj["permission_overwrites"][zzz]["allow_new"]
               if "deny_new" in channel_obj["permission_overwrites"][zzz]:
                 del channel_obj["permission_overwrites"][zzz]["deny_new"]
+            print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
             if overwrites == channel_obj["permission_overwrites"]:
               continue
             print("UPDATING OVERWRITES FOR: ", channel)
