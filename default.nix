@@ -309,7 +309,7 @@ for i in guilds:
             
 
             #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
-            if sorted(overwrites, key=lambda d: d['id']) != sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
+            if sorted(overwrites, key=lambda d: int(d['id'])) != sorted(channel_obj["permission_overwrites"], key=lambda d: int(d['id'])):
               print("UPDATING OVERWRITES FOR CATEGORY: ", category)
               print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
               headers=headers).json())
