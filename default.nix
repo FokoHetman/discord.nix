@@ -196,9 +196,10 @@ perms = list(map(camel_case, [
   "USE_EXTERNAL_APPS"
 ]))
 
-def build_permissions(discord_roles, roles, users):
+def build_permissions(current_overrides, discord_roles, roles, users):
   # iterate users too
   result = []
+  set_ids = []
   for i in roles:
     role_id = -1
     if i.isnumeric():
@@ -209,7 +210,8 @@ def build_permissions(discord_roles, roles, users):
           role_id = j["id"]
     if int(role_id)<0:
       raise Exception("non existent role")
-    
+    set_ids.append(role_id)
+
     allow = 0
     deny = 0
     for permission in roles[i]:
@@ -224,6 +226,17 @@ def build_permissions(discord_roles, roles, users):
     res["allow"] = allow
     res["deny"] = deny
     result.append(res)
+
+  for i in current_overrides:
+    if i["type"]=='role' and i["id"] not in set_ids:
+      res = {
+        "id": i["id"],
+        "type": 'role',
+        "allow": None,
+        "deny": None,
+      }
+      result.append(res)
+
   return result
 
 for i in guilds:
@@ -260,7 +273,7 @@ for i in guilds:
           if "users" in cut:
             userc = cut["users"]
 
-          overwrites = build_permissions(roles, rolec,
+          overwrites = build_permissions({}, roles, rolec,
                                               userc)
 
         
@@ -290,7 +303,7 @@ for i in guilds:
             if "users" in cut:
               userc = cut["users"]
 
-            overwrites = build_permissions(roles, rolec,
+            overwrites = build_permissions({}, roles, rolec,
                                                 userc)
 
           resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels",
@@ -306,13 +319,16 @@ for i in guilds:
             if "users" in cut:
               userc = cut["users"]
 
-            overwrites = build_permissions(roles, rolec,
-                                                userc)
           channel_obj = None
           for chnl in channels:
             if (chnl["name"]==channel or str(chnl["id"])==channel) and chnl["parent_id"] == id:
               channel_obj = chnl
               break
+            overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
+                                                userc)
+          
+
+          
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
               if "allow_new" in channel_obj["permission_overwrites"][zzz]:
@@ -325,7 +341,6 @@ for i in guilds:
             print("UPDATING OVERWRITES FOR: ", channel)
             print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
               headers=headers).json())
-
 
 '';
 
