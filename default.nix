@@ -253,7 +253,7 @@ for i in guilds:
     for channel in channels:
       exists = False
       for cat in config["servers"][i["name"]]["categories"]:
-        if channel["name"] in short[i]["channels"] or channel["id"] in short[i]["channels"]:
+        if channel["name"] in short[cat]["channels"] or channel["id"] in short[cat]["channels"]:
           exists = True
           break
 
