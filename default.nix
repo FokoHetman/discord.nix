@@ -369,7 +369,7 @@ for i in guilds:
                 del channel_obj["permission_overwrites"][zzz]["allow_new"]
               if "deny_new" in channel_obj["permission_overwrites"][zzz]:
                 del channel_obj["permission_overwrites"][zzz]["deny_new"]
-            #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
+            print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
             if sorted(overwrites, key=lambda d: d['id']) == sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
               print("skipping channel: ", channel)
               continue
