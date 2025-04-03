@@ -234,8 +234,8 @@ def build_permissions(current_overrides, discord_roles, roles, users, guild_id):
       res = {
         "id": i["id"],
         "type": 'role',
-        "allow": None,
-        "deny": None,
+        "allow": 0,
+        "deny": 0,
       }
       result.append(res)
 
