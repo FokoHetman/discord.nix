@@ -119,7 +119,6 @@ let
     libraries = with pkgs.python3Packages; [ requests json5 ];
     flakeIgnore = ["E111" "E114" "E121" "E221" "E251" "E127" "E128" "E201" "E202" "W291" "W293" "W391" "E265" "E302" "E303" "E305" "E501" "E231" "E261" "E225"];
   } /*python3*/ ''
-
 import requests
 import json
 
@@ -310,6 +309,11 @@ for i in guilds:
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
         else:
           overwrites = {}
+          channel_obj = None
+          for chnl in channels:
+            if (chnl["name"]==channel or str(chnl["id"])==channel) and chnl["parent_id"] == id:
+              channel_obj = chnl
+              break
           if "permissions" in config["servers"][i["name"]]["categories"][category]["channels"][channel]:
             rolec = {}
             userc = {}
@@ -318,12 +322,6 @@ for i in guilds:
               rolec = cut["roles"]
             if "users" in cut:
               userc = cut["users"]
-
-          channel_obj = None
-          for chnl in channels:
-            if (chnl["name"]==channel or str(chnl["id"])==channel) and chnl["parent_id"] == id:
-              channel_obj = chnl
-              break
             overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
                                                 userc)
           
@@ -341,6 +339,7 @@ for i in guilds:
             print("UPDATING OVERWRITES FOR: ", channel)
             print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
               headers=headers).json())
+
 
 '';
 
