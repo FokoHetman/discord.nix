@@ -324,8 +324,7 @@ for i in guilds:
       
 
       for channel in channels:
-        if channel["name"] not in config["servers"][i["name"]]["categories"][category]["channels"]
-          and channel["id"] not in config["servers"][i["name"]]["categories"][category]["channels"]:
+        if channel["name"] not in config["servers"][i["name"]]["categories"][category]["channels"] and channel["id"] not in config["servers"][i["name"]]["categories"][category]["channels"]:
           requests.delete("https://discord.com/api/channels/{channel['id']}")
 
       for channel in config["servers"][i["name"]]["categories"][category]["channels"]:
