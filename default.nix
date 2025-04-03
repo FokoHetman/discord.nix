@@ -303,7 +303,7 @@ for i in guilds:
             set_ids = []
             for set_id in overwrites:
               set_ids.append(set_id["id"])
-            for ovr in overrides:
+            for ovr in overwrites:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
                 requests.delete("https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
             
@@ -377,7 +377,7 @@ for i in guilds:
             set_ids = []
             for set_id in overwrites:
               set_ids.append(set_id["id"])
-            for ovr in overrides:
+            for ovr in overwrites:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
                 requests.delete("https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
 
