@@ -325,7 +325,10 @@ for i in guilds:
 
       for channel in channels:
         if channel["name"] not in config["servers"][i["name"]]["categories"][category]["channels"] and channel["id"] not in config["servers"][i["name"]]["categories"][category]["channels"]:
-          requests.delete("https://discord.com/api/channels/{channel['id']}")
+          print("deleting channel: ", channel["name"])
+          print(requests.delete("https://discord.com/api/channels/{channel['id']}").json())
+
+
 
       for channel in config["servers"][i["name"]]["categories"][category]["channels"]:
         if channel not in map(lambda x: x["name"], filter( lambda x: x["parent_id"]==id, channels ) ):
