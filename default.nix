@@ -276,7 +276,7 @@ for i in guilds:
             userc = cut["users"]
 
           overwrites = build_permissions({}, roles, rolec,
-                                              userc, guilds[i]["id"])
+                                              userc, i["id"])
 
         
         resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels", 
@@ -341,7 +341,7 @@ for i in guilds:
               userc = cut["users"]
 
             overwrites = build_permissions({}, roles, rolec,
-                                                userc, guilds[i]["id"])
+                                                userc, i["id"])
 
           resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels",
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
@@ -361,7 +361,7 @@ for i in guilds:
             if "users" in cut:
               userc = cut["users"]
             overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
-                                                userc, guilds[i]["id"])
+                                                userc, i["id"])
           
 
           
