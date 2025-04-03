@@ -199,7 +199,6 @@ perms = list(map(camel_case, [
 def build_permissions(current_overrides, discord_roles, roles, users, guild_id):
   # iterate users too
   result = []
-  set_ids = []
   for i in roles:
     role_id = -1
     if i.isnumeric():
@@ -212,7 +211,6 @@ def build_permissions(current_overrides, discord_roles, roles, users, guild_id):
         role_id = guild_id
     if int(role_id)<0:
       raise Exception("non existent role")
-    set_ids.append(role_id)
 
     allow = 0
     deny = 0
@@ -229,15 +227,6 @@ def build_permissions(current_overrides, discord_roles, roles, users, guild_id):
     res["deny"] = deny
     result.append(res)
 
-  for i in current_overrides:
-    if i["type"]=='role' and i["id"] not in set_ids:
-      res = {
-        "id": i["id"],
-        "type": 'role',
-        "allow": 0,
-        "deny": 0,
-      }
-      result.append(res)
 
   return result
 
@@ -310,6 +299,15 @@ for i in guilds:
                 del channel_obj["permission_overwrites"][zzz]["allow_new"]
               if "deny_new" in channel_obj["permission_overwrites"][zzz]:
                 del channel_obj["permission_overwrites"][zzz]["deny_new"]
+              
+            set_ids = []
+            for set_id in overwrites:
+              set_ids.append(set_id["id"])
+            for ovr in current_overrides:
+              if ovr["type"]=='role' and ovr["id"] not in set_ids:
+                requests.delete("https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
+            
+
             #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
             if sorted(overwrites, key=lambda d: d['id']) != sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
               print("UPDATING OVERWRITES FOR CATEGORY: ", category)
@@ -324,6 +322,12 @@ for i in guilds:
             id = cat["id"]
             break
       
+
+      for channel in channels:
+        if channel["name"] not in config["servers"][i["name"]]["categories"][category]["channels"]
+          and channel["id"] not in config["servers"][i["name"]]["categories"][category]["channels"]:
+          requests.delete("https://discord.com/api/channels/{channel['id']}")
+
       for channel in config["servers"][i["name"]]["categories"][category]["channels"]:
         if channel not in map(lambda x: x["name"], filter( lambda x: x["parent_id"]==id, channels ) ):
           print("Creating channel: ", channel)
@@ -361,7 +365,7 @@ for i in guilds:
               userc = cut["users"]
             overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
                                                 userc, i["id"])
-          
+
 
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
@@ -369,7 +373,16 @@ for i in guilds:
                 del channel_obj["permission_overwrites"][zzz]["allow_new"]
               if "deny_new" in channel_obj["permission_overwrites"][zzz]:
                 del channel_obj["permission_overwrites"][zzz]["deny_new"]
-            print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
+            
+
+            set_ids = []
+            for set_id in overwrites:
+              set_ids.append(set_id["id"])
+            for ovr in current_overrides:
+              if ovr["type"]=='role' and ovr["id"] not in set_ids:
+                requests.delete("https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
+
+
             if sorted(overwrites, key=lambda d: d['id']) == sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
               print("skipping channel: ", channel)
               continue
