@@ -311,10 +311,9 @@ for i in guilds:
               if "deny_new" in channel_obj["permission_overwrites"][zzz]:
                 del channel_obj["permission_overwrites"][zzz]["deny_new"]
             #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
-            if sorted(overwrites, key=lambda d: d['id']) == sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
-              continue
-            print("UPDATING OVERWRITES FOR CATEGORY: ", category)
-            print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
+            if sorted(overwrites, key=lambda d: d['id']) != sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
+              print("UPDATING OVERWRITES FOR CATEGORY: ", category)
+              print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
               headers=headers).json())
 
 
@@ -364,7 +363,6 @@ for i in guilds:
                                                 userc, i["id"])
           
 
-          print("Channel Obj is: ", channel_obj)
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
               if "allow_new" in channel_obj["permission_overwrites"][zzz]:
