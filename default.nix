@@ -364,7 +364,7 @@ for i in guilds:
                                                 userc, i["id"])
           
 
-          
+          print("Channel Obj is: ", channel_obj)
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
               if "allow_new" in channel_obj["permission_overwrites"][zzz]:
