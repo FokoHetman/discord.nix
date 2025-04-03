@@ -247,6 +247,19 @@ for i in guilds:
           channels.append(x)
         case _:
           pass
+
+
+    for channel in channels:
+      exists = False
+      for i in config["servers"][i["name"]]["categories"]:
+        if channel["name"] in categories[i]["channels"] or channel["id"] in categories[i]["channels"]:
+          exists = True
+          break
+
+      if not exists:
+        print("deleting channel: ", channel["name"])
+        print(requests.delete(f"https://discord.com/api/channels/{channel['id']}").json())
+
     for category in config["servers"][i["name"]]["categories"]:
       id = 0
       if category not in map(lambda x: x["name"], categories):
@@ -321,12 +334,6 @@ for i in guilds:
           if cat["name"]==category:
             id = cat["id"]
             break
-      
-
-      for channel in channels:
-        if channel["name"] not in config["servers"][i["name"]]["categories"][category]["channels"] and channel["id"] not in config["servers"][i["name"]]["categories"][category]["channels"]:
-          print("deleting channel: ", channel["name"])
-          print(requests.delete(f"https://discord.com/api/channels/{channel['id']}").json())
 
 
 
