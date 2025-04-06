@@ -65,11 +65,6 @@ let
                 type = types.attrsOf (permission_type);
                 default = {};
               };
-              position = mkOption {
-                description = "Position of the channel on channel list.";
-                type = types.integer;
-                default = 0;
-              };
             };
           };
           default = {};
@@ -102,11 +97,6 @@ let
                 type = types.attrsOf (permission_type);
                 default = {};
               };
-              position = mkOption {
-                description = "Position of the category on channel list.";
-                type = types.integer;
-                default = 0;
-              };
             };
           };
           default = {};
@@ -133,11 +123,6 @@ let
         };
         color = mkOption {
           description = "Role RGB color.";
-          type = types.integer;
-          default = 0;
-        };
-        position = mkOption {
-          description = "Position of the role in role list.";
           type = types.integer;
           default = 0;
         };
@@ -270,6 +255,7 @@ for i in guilds:
     print(chctg)
     categories = []
     channels = []
+    category_pos = -1
     for x in chctg:
       match x["type"]:
         case 4: # Category
@@ -295,6 +281,8 @@ for i in guilds:
         print(requests.delete(f"{api}/channels/{channel['id']}").json())*/ /*TODO*/
 
     for category in config["servers"][i["name"]]["categories"]:
+      category_pos += 1
+      chanel_pos = -1
       id = 0
       if category not in map(lambda x: x["name"], categories):
         print("Creating category: ", category)
@@ -320,6 +308,8 @@ for i in guilds:
         id = resp["id"]
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
+        if category_pos != channel_obj["position"]:
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": pos}))
       else:
           overwrites = {}
           channel_obj = None
@@ -337,11 +327,6 @@ for i in guilds:
               userc = cut["users"]
             overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
                                                 userc, id)
-          pos = 0
-
-          if "position" in config["servers"][i["name"]]["categories"][category]:
-            pos = config["servers"][i["name"]]["categories"][category]["position"]
-
           
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
@@ -371,8 +356,8 @@ for i in guilds:
             
             # POSITION SYNC
 
-            if pos != channel_obj["position"]:
-              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"position": pos}))
+            if category_pos != channel_obj["position"]:
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": channel_obj['id'], "position": pos}))
 
 
 
@@ -386,6 +371,7 @@ for i in guilds:
 
 
       for channel in config["servers"][i["name"]]["categories"][category]["channels"]:
+        channel_pos += 1
         if channel not in map(lambda x: x["name"], filter( lambda x: x["parent_id"]==id, channels ) ):
           print("Creating channel: ", channel)
 
@@ -403,8 +389,18 @@ for i in guilds:
             overwrites = build_permissions({}, roles, rolec,
                                                 userc, i["id"])
 
+
+          shortened = config["servers"][i["name"]]["categories"][category]["channels"][channel]
+
+          sync = False
+          if "sync" in shortened:
+            sync = shortened["sync"]
+
           resp = requests.post(f"{api}/guilds/{i['id']}/channels",
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
+          if channel_pos != resp["position"]:
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", 
+                json={"id": resp["id"], "position": channel_pos, "lock_permissions": sync}))
         else:
           overwrites = {}
           channel_obj = None
@@ -426,10 +422,6 @@ for i in guilds:
 
 
           shortened = config["servers"][i["name"]]["categories"][category]["channels"][channel]
-          pos = 0
-
-          if "position" in shortened:
-            pos = shortened["position"]
 
           sync = False
           if "sync" in shortened:
@@ -464,9 +456,9 @@ for i in guilds:
             
             # POSITION SYNC
 
-            if pos != channel_obj["position"]:
+            if channel_pos != channel_obj["position"]:
               print(requests.patch(f"{api}/guilds/{i['id']}/channels", 
-                json={"id": channel_obj["id"], "position": pos, "lock_permissions": sync}))
+                json={"id": channel_obj["id"], "position": channel_pos, "lock_permissions": sync}))
 
 
 '';
