@@ -65,13 +65,18 @@ let
                 type = types.attrsOf (permission_type);
                 default = {};
               };
+              position = mkOption {
+                description = "Position of the channel on channel list.";
+                type = types.integer;
+                default = 0;
+              };
             };
           };
           default = {};
         };
         type = mkOption {
           description = "Type of the channel.";
-          type = types.enum ["text" "voice"];
+          type = types.enum ["text" "voice" "forum" "announcements"];
           default = "text";
         };
       };
@@ -97,6 +102,11 @@ let
                 type = types.attrsOf (permission_type);
                 default = {};
               };
+              position = mkOption {
+                description = "Position of the category on channel list.";
+                type = types.integer;
+                default = 0;
+              };
             };
           };
           default = {};
@@ -111,6 +121,26 @@ let
     type = types.attrsOf (types.submodule {
       options = {
         permissions = role_permissions;
+        hoist = mkOption {
+          description = "Whether to display the role owners separately in members tab.";
+          type = types.bool;
+          default = false;
+        };
+        mentionable = mkOption {
+          description = "Allow others to mention this role.";
+          type = types.bool;
+          default = false;
+        };
+        color = mkOption {
+          description = "Role RGB color.";
+          type = types.integer;
+          default = 0;
+        };
+        position = mkOption {
+          description = "Position of the role in role list.";
+          type = types.integer;
+          default = 0;
+        };
       };
     });
     default = {};
@@ -121,6 +151,9 @@ let
   } /*python3*/ ''
 import requests
 import json
+
+
+api = "https://discord.com/api"
 
 print("discord.nix: Starting...")
 
@@ -134,7 +167,7 @@ f.close()
 
 headers = {"Authorization": token, "Content-Type": "application/json"}
 
-guilds = requests.get('https://discord.com/api/users/@me/guilds', headers=headers).json()
+guilds = requests.get(f'{api}/users/@me/guilds', headers=headers).json()
 
 
 def camel_case(text):
@@ -232,8 +265,8 @@ def build_permissions(current_overrides, discord_roles, roles, users, guild_id):
 
 for i in guilds:
   if i["name"] in config["servers"]: # add id checking too later, for name redefining
-    chctg = requests.get(f"https://discord.com/api/guilds/{i['id']}/channels", headers=headers).json()
-    roles = requests.get(f"https://discord.com/api/guilds/{i['id']}/roles", headers=headers).json()
+    chctg = requests.get(f"{api}/guilds/{i['id']}/channels", headers=headers).json()
+    roles = requests.get(f"{api}/guilds/{i['id']}/roles", headers=headers).json()
     print(chctg)
     categories = []
     channels = []
@@ -249,7 +282,7 @@ for i in guilds:
           pass
 
 
-    short = config["servers"][i["name"]]["categories"]
+    /*short = config["servers"][i["name"]]["categories"]
     for channel in channels:
       exists = False
       for cat in config["servers"][i["name"]]["categories"]:
@@ -259,7 +292,7 @@ for i in guilds:
 
       if not exists:
         print("deleting channel: ", channel["name"])
-        print(requests.delete(f"https://discord.com/api/channels/{channel['id']}").json())
+        print(requests.delete(f"{api}/channels/{channel['id']}").json())*/ /*TODO*/
 
     for category in config["servers"][i["name"]]["categories"]:
       id = 0
@@ -282,7 +315,7 @@ for i in guilds:
                                               userc, i["id"])
 
         
-        resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels", 
+        resp = requests.post(f"{api}/guilds/{i['id']}/channels", 
           json = {"name": category, "type": 4, "permission_overwrites": overwrites}, headers=headers).json()
         id = resp["id"]
         # print(resp)
@@ -304,7 +337,10 @@ for i in guilds:
               userc = cut["users"]
             overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
                                                 userc, id)
-          
+          pos = 0
+
+          if "position" in config["servers"][i["name"]]["categories"][category]:
+            pos = config["servers"][i["name"]]["categories"][category]["position"]
 
           
           if channel_obj:
@@ -319,14 +355,25 @@ for i in guilds:
               set_ids.append(set_id["id"])
             for ovr in overwrites:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
-                requests.delete(f"https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
+                requests.delete(f"{api}/channels/{channel_obj['id']}/permissions/{ovr['id']}")
             
-
+            patch
             #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
             if sorted(overwrites, key=lambda d: int(d['id'])) != sorted(channel_obj["permission_overwrites"], key=lambda d: int(d['id'])):
               print("UPDATING OVERWRITES FOR CATEGORY: ", category)
-              print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
-              headers=headers).json())
+              patch["permission_overwrites"] = overwrites
+            
+            # PATCH SYNC 
+
+            if patch!={}:
+              print(requests.patch(f"{api}/channels/{channel_obj['id']}", json=patch, 
+                headers=headers).json())
+            
+            # POSITION SYNC
+
+            if pos != channel_obj["position"]:
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"position": pos}))
+
 
 
 
@@ -356,7 +403,7 @@ for i in guilds:
             overwrites = build_permissions({}, roles, rolec,
                                                 userc, i["id"])
 
-          resp = requests.post(f"https://discord.com/api/guilds/{i['id']}/channels",
+          resp = requests.post(f"{api}/guilds/{i['id']}/channels",
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
         else:
           overwrites = {}
@@ -377,6 +424,18 @@ for i in guilds:
                                                 userc, i["id"])
 
 
+
+          shortened = config["servers"][i["name"]]["categories"][category]["channels"][channel]
+          pos = 0
+
+          if "position" in shortened:
+            pos = shortened["position"]
+
+          sync = False
+          if "sync" in shortened:
+            sync = shortened["sync"]
+
+
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
               if "allow_new" in channel_obj["permission_overwrites"][zzz]:
@@ -390,15 +449,24 @@ for i in guilds:
               set_ids.append(set_id["id"])
             for ovr in overwrites:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
-                requests.delete(f"https://discord.com/api/channels/{channel_obj['id']}/permissions/{ovr['id']}")
+                requests.delete(f"{api}/channels/{channel_obj['id']}/permissions/{ovr['id']}")
 
 
-            if sorted(overwrites, key=lambda d: d['id']) == sorted(channel_obj["permission_overwrites"], key=lambda d: d['id']):
-              print("skipping channel: ", channel)
-              continue
-            print("UPDATING OVERWRITES FOR: ", channel)
-            print(requests.patch(f"https://discord.com/api/channels/{channel_obj['id']}", json={"permission_overwrites": overwrites}, 
-              headers=headers).json())
+            if sorted(overwrites, key=lambda d: int(d['id'])) != sorted(channel_obj["permission_overwrites"], key=lambda d: int(d['id'])):
+              print("UPDATING OVERWRITES FOR CATEGORY: ", category)
+              patch["permission_overwrites"] = overwrites
+            
+            # PATCH SYNC 
+
+            if patch!={}:
+              print(requests.patch(f"{api}/channels/{channel_obj['id']}", json=patch, 
+                headers=headers).json())
+            
+            # POSITION SYNC
+
+            if pos != channel_obj["position"]:
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", 
+                json={"id": channel_obj["id"], "position": pos, "lock_permissions": sync}))
 
 
 '';
