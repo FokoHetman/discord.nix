@@ -273,7 +273,7 @@ for i in guilds:
           pass
 
 
-    /*short = config["servers"][i["name"]]["categories"]
+    '''short = config["servers"][i["name"]]["categories"]
     for channel in channels:
       exists = False
       for cat in config["servers"][i["name"]]["categories"]:
@@ -283,7 +283,7 @@ for i in guilds:
 
       if not exists:
         print("deleting channel: ", channel["name"])
-        print(requests.delete(f"{api}/channels/{channel['id']}").json())*/ /*TODO*/
+        print(requests.delete(f"{api}/channels/{channel['id']}").json()) TODO'''
 
     for category in config["servers"][i["name"]]["categories"]:
       category_pos += 1
