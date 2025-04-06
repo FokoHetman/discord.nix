@@ -275,7 +275,7 @@ for i in guilds:
 
     for category in config["servers"][i["name"]]["categories"]:
       category_pos += 1
-      chanel_pos = -1
+      channel_pos = -1
       id = 0
       if category not in map(lambda x: x["name"], categories):
         print("Creating category: ", category)
@@ -302,7 +302,7 @@ for i in guilds:
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
         if category_pos != channel_obj["position"]:
-              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": pos}))
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": category_pos}))
       else:
           overwrites = {}
           channel_obj = None
@@ -335,7 +335,7 @@ for i in guilds:
               if ovr["type"]=='role' and ovr["id"] not in set_ids:
                 requests.delete(f"{api}/channels/{channel_obj['id']}/permissions/{ovr['id']}")
             
-            patch
+            patch = {}
             #print(overwrites, "::\nvs\n::\n", channel_obj["permission_overwrites"])
             if sorted(overwrites, key=lambda d: int(d['id'])) != sorted(channel_obj["permission_overwrites"], key=lambda d: int(d['id'])):
               print("UPDATING OVERWRITES FOR CATEGORY: ", category)
@@ -350,7 +350,7 @@ for i in guilds:
             # POSITION SYNC
 
             if category_pos != channel_obj["position"]:
-              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": channel_obj['id'], "position": pos}))
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": channel_obj['id'], "position": category_pos}))
 
 
 
@@ -384,7 +384,7 @@ for i in guilds:
                                                 userc, i["id"])          
 
             if "sync" in cut:
-              sync = shortened["sync"]
+              sync = cut["sync"]
 
 
 
@@ -413,7 +413,8 @@ for i in guilds:
                                                 userc, i["id"])
 
             if "sync" in cut:
-              sync = shortened["sync"]
+              sync = cut["sync"]
+
 
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
@@ -431,6 +432,7 @@ for i in guilds:
                 requests.delete(f"{api}/channels/{channel_obj['id']}/permissions/{ovr['id']}")
 
 
+            patch = {}
             if sorted(overwrites, key=lambda d: int(d['id'])) != sorted(channel_obj["permission_overwrites"], key=lambda d: int(d['id'])):
               print("UPDATING OVERWRITES FOR CATEGORY: ", category)
               patch["permission_overwrites"] = overwrites
