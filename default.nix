@@ -65,6 +65,11 @@ let
                 type = types.attrsOf (permission_type);
                 default = {};
               };
+              sync = mkOption {
+                description = "Sync permissions to category.";
+                type = types.bool;
+                default = false;
+              };
             };
           };
           default = {};
@@ -377,6 +382,7 @@ for i in guilds:
 
           
           overwrites = {}
+          sync = False
           if "permissions" in config["servers"][i["name"]]["categories"][category]["channels"][channel]:
             rolec = {}
             userc = {}
@@ -387,14 +393,12 @@ for i in guilds:
               userc = cut["users"]
 
             overwrites = build_permissions({}, roles, rolec,
-                                                userc, i["id"])
+                                                userc, i["id"])          
+
+            if "sync" in cut:
+              sync = shortened["sync"]
 
 
-          shortened = config["servers"][i["name"]]["categories"][category]["channels"][channel]
-
-          sync = False
-          if "sync" in shortened:
-            sync = shortened["sync"]
 
           resp = requests.post(f"{api}/guilds/{i['id']}/channels",
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
@@ -403,6 +407,7 @@ for i in guilds:
                 json={"id": resp["id"], "position": channel_pos, "lock_permissions": sync}))
         else:
           overwrites = {}
+          sync = False
           channel_obj = None
           for chnl in channels:
             if (chnl["name"]==channel or str(chnl["id"])==channel) and chnl["parent_id"] == id:
@@ -419,14 +424,8 @@ for i in guilds:
             overwrites = build_permissions(channel_obj["permission_overwrites"], roles, rolec,
                                                 userc, i["id"])
 
-
-
-          shortened = config["servers"][i["name"]]["categories"][category]["channels"][channel]
-
-          sync = False
-          if "sync" in shortened:
-            sync = shortened["sync"]
-
+            if "sync" in cut:
+              sync = shortened["sync"]
 
           if channel_obj:
             for zzz in range(len(channel_obj["permission_overwrites"])):
