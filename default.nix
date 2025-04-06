@@ -273,7 +273,7 @@ for i in guilds:
           pass
 
 
-   for category in config["servers"][i["name"]]["categories"]:
+    for category in config["servers"][i["name"]]["categories"]:
       category_pos += 1
       chanel_pos = -1
       id = 0
