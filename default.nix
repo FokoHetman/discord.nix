@@ -302,7 +302,7 @@ for i in guilds:
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
         if category_pos != resp["position"]:
-          print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": category_pos}))
+          print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": category_pos}, headers=headers))
       else:
           overwrites = {}
           channel_obj = None
@@ -350,7 +350,7 @@ for i in guilds:
             # POSITION SYNC
 
             if category_pos != channel_obj["position"]:
-              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": channel_obj['id'], "position": category_pos}))
+              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": channel_obj['id'], "position": category_pos}, headers=headers))
 
 
 
@@ -392,7 +392,7 @@ for i in guilds:
             json = {"name": channel, "type": 0, "parent_id": id, "permission_overwrites": overwrites}, headers=headers).json()
           if channel_pos != resp["position"]:
               print(requests.patch(f"{api}/guilds/{i['id']}/channels", 
-                json={"id": resp["id"], "position": channel_pos, "lock_permissions": sync}))
+                json={"id": resp["id"], "position": channel_pos, "lock_permissions": sync}, headers=headers))
         else:
           overwrites = {}
           sync = False
@@ -447,7 +447,7 @@ for i in guilds:
 
             if channel_pos != channel_obj["position"]:
               print(requests.patch(f"{api}/guilds/{i['id']}/channels", 
-                json={"id": channel_obj["id"], "position": channel_pos, "lock_permissions": sync}))
+                json={"id": channel_obj["id"], "position": channel_pos, "lock_permissions": sync}, headers=headers))
 
 
 '';
