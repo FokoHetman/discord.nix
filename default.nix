@@ -301,8 +301,8 @@ for i in guilds:
         id = resp["id"]
         # print(resp)
         print(f"Created {category} with ID: ", resp["id"])
-        if category_pos != channel_obj["position"]:
-              print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": category_pos}))
+        if category_pos != resp["position"]:
+          print(requests.patch(f"{api}/guilds/{i['id']}/channels", json={"id": resp["id"], "position": category_pos}))
       else:
           overwrites = {}
           channel_obj = None
